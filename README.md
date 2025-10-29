@@ -1,4 +1,6 @@
 # Coffee Lake
+![banner](https://github.com/user-attachments/assets/08fe81e5-295c-49c8-851e-73496fa1f08b)
+
 
 ​	Учебный проект по разработке мобильного приложения с применением фреймворка flutter. Проект представляет из себя приложение для кофейни, имеющей систему баллов, которые начисляется при осуществлении заказов, имеет возможности по авторизации в личный кабинет пользователя, а так же позволяет осуществить заказ в кофейне с самовывозом по полной предоплате.
 
@@ -41,7 +43,7 @@
 ​	На данной странице будут отображаться данные пользователя, которые можно изменить по кнопке "Редактировать данные". Тогда строки с данными заменяются на поля ввода, а кнопка редактирования меняется на кнопку "Сохранить", сохраняющую изменённые данные.
 
 ### 	Меню
-<img width="412" height="917" alt="image-20251029202217951" src="https://github.com/user-attachments/assets/4fc1c7df-632e-44b1-a70d-0114f0c71f81" /><img width="412" height="917" alt="image-20251029202239364" src="https://github.com/user-attachments/assets/a98c2723-1736-4391-a06d-986daddeb242" /><img width="412" height="917" alt="image-20251029202333046" src="https://github.com/user-attachments/assets/fa014494-cbb2-447b-82b7-f9238313d685" />
+<img width="206" height="458" alt="image-20251029202217951" src="https://github.com/user-attachments/assets/4fc1c7df-632e-44b1-a70d-0114f0c71f81" />  <img width="206" height="458" alt="image-20251029202239364" src="https://github.com/user-attachments/assets/a98c2723-1736-4391-a06d-986daddeb242" />  <img width="206" height="458" alt="image-20251029202333046" src="https://github.com/user-attachments/assets/fa014494-cbb2-447b-82b7-f9238313d685" />
 
 ​	Данная страница включает в себя:
 
@@ -55,7 +57,7 @@
 Карточка позволяет добавить товар к заказу, а так же выбрать объём/количество для заказа.
 
 ### Корзина
-<img width="412" height="917" alt="image-20251029202744316" src="https://github.com/user-attachments/assets/35e91f34-37b0-4446-b104-ae6dcc14f64c" /><img width="412" height="917" alt="image-20251029202826916" src="https://github.com/user-attachments/assets/a589c1c6-d48f-4a0a-bc64-65b19eeca81e" />
+<img width="206" height="458" alt="image-20251029202744316" src="https://github.com/user-attachments/assets/35e91f34-37b0-4446-b104-ae6dcc14f64c" />  <img width="206" height="458" alt="image-20251029202826916" src="https://github.com/user-attachments/assets/a589c1c6-d48f-4a0a-bc64-65b19eeca81e" />
 
 
 ​	На данной странице будет отображаться следующая информация:
