@@ -1,9 +1,7 @@
 # Coffee Lake
 ![banner](https://github.com/user-attachments/assets/08fe81e5-295c-49c8-851e-73496fa1f08b)
 
-
 ​	Учебный проект по разработке мобильного приложения с применением фреймворка flutter. Проект представляет из себя приложение для кофейни, имеющей систему баллов, которые начисляется при осуществлении заказов, имеет возможности по авторизации в личный кабинет пользователя, а так же позволяет осуществить заказ в кофейне с самовывозом по полной предоплате.
-
 
 
 ## Функционал приложения
@@ -15,14 +13,12 @@
 5. Просмотр доступных напитков/закусок
 6. Осуществление заказа
 
-
-
 ## Планируемые экраны приложения
 
 ​	Всего планируется 6 основных экранов приложения:
 
 ### 	Главная страница
-<img width="412" height="917" alt="image-20251029194317478" src="https://github.com/user-attachments/assets/abf15bf8-909b-46c8-9c9d-8fbb7f614a3a" />
+<img width="206" height="458" alt="image-20251029194317478" src="https://github.com/user-attachments/assets/abf15bf8-909b-46c8-9c9d-8fbb7f614a3a" />
 
 ​	Данный экран будет предоставлять следующие функции:
 
@@ -32,13 +28,13 @@
 - Отображение спец-предложений
 
 ### 	Страница авторизации
+<img width="206" height="458" alt="image-20251029200441987" src="https://github.com/user-attachments/assets/f1c5a84a-caff-4063-9230-41ae3cb8a31b" />  <img width="206" height="458" alt="image-20251029201513606" src="https://github.com/user-attachments/assets/85a1e2f6-8148-45a3-84e6-d19d52ee17e6" />
 
-<img src="https://disk.yandex.ru/i/O8qGP0Ab4iFImg" alt="image-20251029200441987" style="zoom:35%;" /><img src="https://disk.yandex.ru/i/1TfQ5kHZzeHdXg" alt="image-20251029201513606" style="zoom:35%;" />
 
 ​	Эта страница имеет одно поле для ввода номера телефона. Этот номер привязывается к аккаунту. При авторизации на него приходит смс с кодом, который потребуется ввести в новое поле
 
 ### 	Профиль пользователя
-<img width="412" height="917" alt="image-20251029200441987" src="https://github.com/user-attachments/assets/f1c5a84a-caff-4063-9230-41ae3cb8a31b" /><img width="412" height="917" alt="image-20251029201513606" src="https://github.com/user-attachments/assets/85a1e2f6-8148-45a3-84e6-d19d52ee17e6" />
+<img width="206" height="458" alt="image-20251029201807081" src="https://github.com/user-attachments/assets/1fbfdf86-77eb-4e7a-8fac-e7678ae96bf5" />  <img width="206" height="458" alt="image-20251029201925245" src="https://github.com/user-attachments/assets/8814a5f5-7777-4925-9b48-1ca46bb474ed" />
 
 ​	На данной странице будут отображаться данные пользователя, которые можно изменить по кнопке "Редактировать данные". Тогда строки с данными заменяются на поля ввода, а кнопка редактирования меняется на кнопку "Сохранить", сохраняющую изменённые данные.
 
