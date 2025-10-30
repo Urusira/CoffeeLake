@@ -1,7 +1,7 @@
 # Coffee Lake
+![banner](https://github.com/user-attachments/assets/08fe81e5-295c-49c8-851e-73496fa1f08b)
 
 ​	Учебный проект по разработке мобильного приложения с применением фреймворка flutter. Проект представляет из себя приложение для кофейни, имеющей систему баллов, которые начисляется при осуществлении заказов, имеет возможности по авторизации в личный кабинет пользователя, а так же позволяет осуществить заказ в кофейне с самовывозом по полной предоплате.
-
 
 
 ## Функционал приложения
@@ -13,15 +13,12 @@
 5. Просмотр доступных напитков/закусок
 6. Осуществление заказа
 
-
-
 ## Планируемые экраны приложения
 
-​	Всего планируется 6 основных экранов приложения:
+​	Всего планируется 5 основных экранов приложения:
 
 ### 	Главная страница
-
-<img src="C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20251029194330578.png" alt="image-20251029194330578" style="zoom:35%;" />
+<img width="206" height="458" alt="image-20251029194317478" src="https://github.com/user-attachments/assets/abf15bf8-909b-46c8-9c9d-8fbb7f614a3a" />
 
 ​	Данный экран будет предоставлять следующие функции:
 
@@ -31,20 +28,18 @@
 - Отображение спец-предложений
 
 ### 	Страница авторизации
+<img width="206" height="458" alt="image-20251029200441987" src="https://github.com/user-attachments/assets/f1c5a84a-caff-4063-9230-41ae3cb8a31b" />  <img width="206" height="458" alt="image-20251029201513606" src="https://github.com/user-attachments/assets/85a1e2f6-8148-45a3-84e6-d19d52ee17e6" />
 
-<img src="C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20251029200441987.png" alt="image-20251029200441987" style="zoom:35%;" /><img src="C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20251029201513606.png" alt="image-20251029201513606" style="zoom:35%;" />
 
 ​	Эта страница имеет одно поле для ввода номера телефона. Этот номер привязывается к аккаунту. При авторизации на него приходит смс с кодом, который потребуется ввести в новое поле
 
 ### 	Профиль пользователя
-
-<img src="C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20251029201807081.png" alt="image-20251029201807081" style="zoom:35%;" /><img src="C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20251029201925245.png" alt="image-20251029201925245" style="zoom:35%;" />
+<img width="206" height="458" alt="image-20251029201807081" src="https://github.com/user-attachments/assets/1fbfdf86-77eb-4e7a-8fac-e7678ae96bf5" />  <img width="206" height="458" alt="image-20251029201925245" src="https://github.com/user-attachments/assets/8814a5f5-7777-4925-9b48-1ca46bb474ed" />
 
 ​	На данной странице будут отображаться данные пользователя, которые можно изменить по кнопке "Редактировать данные". Тогда строки с данными заменяются на поля ввода, а кнопка редактирования меняется на кнопку "Сохранить", сохраняющую изменённые данные.
 
 ### 	Меню
-
-<img src="C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20251029202217951.png" alt="image-20251029202217951" style="zoom:35%;" /><img src="C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20251029202239364.png" alt="image-20251029202239364" style="zoom:35%;" /><img src="C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20251029202333046.png" alt="image-20251029202333046" style="zoom:35%;" />
+<img width="206" height="458" alt="image-20251029202217951" src="https://github.com/user-attachments/assets/4fc1c7df-632e-44b1-a70d-0114f0c71f81" />  <img width="206" height="458" alt="image-20251029202239364" src="https://github.com/user-attachments/assets/a98c2723-1736-4391-a06d-986daddeb242" />  <img width="206" height="458" alt="image-20251029202333046" src="https://github.com/user-attachments/assets/fa014494-cbb2-447b-82b7-f9238313d685" />
 
 ​	Данная страница включает в себя:
 
@@ -58,8 +53,8 @@
 Карточка позволяет добавить товар к заказу, а так же выбрать объём/количество для заказа.
 
 ### Корзина
+<img width="206" height="458" alt="image-20251029202744316" src="https://github.com/user-attachments/assets/35e91f34-37b0-4446-b104-ae6dcc14f64c" />  <img width="206" height="458" alt="image-20251029202826916" src="https://github.com/user-attachments/assets/a589c1c6-d48f-4a0a-bc64-65b19eeca81e" />
 
-<img src="C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20251029202744316.png" alt="image-20251029202744316" style="zoom:35%;" /><img src="C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20251029202826916.png" alt="image-20251029202826916" style="zoom:35%;" />
 
 ​	На данной странице будет отображаться следующая информация:
 
@@ -74,3 +69,6 @@
 - Использование промокодов
 - Списание бонусов
 - Оформление заказа
+
+
+На демонстрацию приложения можно посмотреть в демонстрационном макете по <a href="https://www.figma.com/proto/7SpuepU4dTD1HU077wI2V6/LabaProject?node-id=6-524&t=pOKaHlNwb3Q0e2Fc-1">ссылке</a>
