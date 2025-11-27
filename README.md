@@ -1,5 +1,5 @@
 # Coffee Lake
-![banner](https://github.com/user-attachments/assets/08fe81e5-295c-49c8-851e-73496fa1f08b)
+![a5a9b290b4ff11f0877efa47c8bda80a_1](https://github.com/user-attachments/assets/515c01cb-0504-4efb-ac69-680be8b8c029)
 
 ​	Учебный проект по разработке мобильного приложения с применением фреймворка flutter. Проект представляет из себя приложение для кофейни, имеющей систему баллов, которые начисляется при осуществлении заказов, имеет возможности по авторизации в личный кабинет пользователя, а так же позволяет осуществить заказ в кофейне с самовывозом по полной предоплате.
 
@@ -18,7 +18,7 @@
 ​	Всего планируется 5 основных экранов приложения:
 
 ### 	Главная страница
-<img width="206" height="458" alt="image-20251029194317478" src="https://github.com/user-attachments/assets/abf15bf8-909b-46c8-9c9d-8fbb7f614a3a" />
+<img width="206" height="458" alt="Главная" src="https://github.com/user-attachments/assets/701bc00f-11f5-4269-b1df-63168d7c563a" />
 
 ​	Данный экран будет предоставлять следующие функции:
 
@@ -28,18 +28,20 @@
 - Отображение спец-предложений
 
 ### 	Страница авторизации
-<img width="206" height="458" alt="image-20251029200441987" src="https://github.com/user-attachments/assets/f1c5a84a-caff-4063-9230-41ae3cb8a31b" />  <img width="206" height="458" alt="image-20251029201513606" src="https://github.com/user-attachments/assets/85a1e2f6-8148-45a3-84e6-d19d52ee17e6" />
-
+<img width="206" height="458" alt="Вход" src="https://github.com/user-attachments/assets/7817c4a0-7c6d-45ce-b19b-a658e3c7ce08" />  <img width="206" height="458" alt="Вход (код)" src="https://github.com/user-attachments/assets/bd60273f-69eb-44fa-bf61-bc29a70b9eb3" />
 
 ​	Эта страница имеет одно поле для ввода номера телефона. Этот номер привязывается к аккаунту. При авторизации на него приходит смс с кодом, который потребуется ввести в новое поле
 
 ### 	Профиль пользователя
-<img width="206" height="458" alt="image-20251029201807081" src="https://github.com/user-attachments/assets/1fbfdf86-77eb-4e7a-8fac-e7678ae96bf5" />  <img width="206" height="458" alt="image-20251029201925245" src="https://github.com/user-attachments/assets/8814a5f5-7777-4925-9b48-1ca46bb474ed" />
+<img width="206" height="458" alt="Профиль" src="https://github.com/user-attachments/assets/be0629ef-ea43-4fd4-96ac-f42890924c68" />  <img width="206" height="458" alt="Профиль (Изменение)" src="https://github.com/user-attachments/assets/4a2af017-27e5-4d9a-b89f-569bcc0f6270" />
+
 
 ​	На данной странице будут отображаться данные пользователя, которые можно изменить по кнопке "Редактировать данные". Тогда строки с данными заменяются на поля ввода, а кнопка редактирования меняется на кнопку "Сохранить", сохраняющую изменённые данные.
 
 ### 	Меню
-<img width="206" height="458" alt="image-20251029202217951" src="https://github.com/user-attachments/assets/4fc1c7df-632e-44b1-a70d-0114f0c71f81" />  <img width="206" height="458" alt="image-20251029202239364" src="https://github.com/user-attachments/assets/a98c2723-1736-4391-a06d-986daddeb242" />  <img width="206" height="458" alt="image-20251029202333046" src="https://github.com/user-attachments/assets/fa014494-cbb2-447b-82b7-f9238313d685" />
+<img width="206" height="458" alt="Меню" src="https://github.com/user-attachments/assets/e080ed05-1586-499b-9336-9ec4471444a1" />  <img width="206" height="458" alt="Меню(подробнее)" src="https://github.com/user-attachments/assets/a5f49f46-ff7e-4fb4-8dea-17db90cb9601" />  <img width="206" height="458" alt="Меню(подробнее счётчик)" src="https://github.com/user-attachments/assets/90985733-a3a8-4c47-80c2-69aba1be3fa5" />
+
+
 
 ​	Данная страница включает в себя:
 
@@ -53,8 +55,7 @@
 Карточка позволяет добавить товар к заказу, а так же выбрать объём/количество для заказа.
 
 ### Корзина
-<img width="206" height="458" alt="image-20251029202744316" src="https://github.com/user-attachments/assets/35e91f34-37b0-4446-b104-ae6dcc14f64c" />  <img width="206" height="458" alt="image-20251029202826916" src="https://github.com/user-attachments/assets/a589c1c6-d48f-4a0a-bc64-65b19eeca81e" />
-
+<img width="206" height="458" alt="Корзина вверху" src="https://github.com/user-attachments/assets/000560d2-c8f1-49d5-a215-4d595c6be693" />  <img width="206" height="458" alt="Корзина внизу" src="https://github.com/user-attachments/assets/64912cf7-b89d-4f9f-8022-742e2733daa1" />
 
 ​	На данной странице будет отображаться следующая информация:
 
