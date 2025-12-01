@@ -3,7 +3,7 @@ class Product {
   final String name;
   final String description;
   final List<double> basePrice;
-  final double? sale;
+  final double sale;
   final String? imageUrl;
   final List<double> sizes;
 

@@ -1,4 +1,5 @@
 import '../../models/product/CartProductData.dart';
+import 'order/OrderRepository.dart';
 
 class CartRepository {
   static List<CartProductData> cartList = List.empty(growable: true);
@@ -14,11 +15,16 @@ class CartRepository {
 
     for (CartProductData it in cartList) {
       baseTotal += it.price * it.count;
-      fullTotal += (it.price - (it.price * (it.sale! / 100))) * it.count;
+      fullTotal += (it.price - (it.price * (it.sale / 100))) * it.count;
     }
 
     res.addAll([baseTotal, fullTotal]);
     return List.unmodifiable(res);
+  }
+
+  static void doOrder() {
+    OrderRepository.push();
+    cartList = List.empty(growable: true);
   }
 
   static void add(CartProductData product) {

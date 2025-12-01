@@ -1,5 +1,8 @@
+import 'package:coffee_lake_app/data/models/product/CartProductData.dart';
 import 'package:coffee_lake_app/data/repository/local/CartRepository.dart';
+import 'package:coffee_lake_app/data/repository/local/order/OrderRepository.dart';
 import 'package:coffee_lake_app/ui/auth/widgets/AuthWidget.dart';
+import 'package:coffee_lake_app/ui/mainPage/widgets/MainPageWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -14,6 +17,38 @@ class CartWidget extends StatefulWidget {
 }
 
 class CartState extends State<CartWidget> {
+  bool useBonusFlag = false;
+
+  void useBonuses() {
+    if ((UserRepository.currentUser?.bonuses ?? 0) == 0) {
+      return;
+    }
+    useBonusFlag = !useBonusFlag;
+    useBonusFlag ? OrderRepository.useBonus() : OrderRepository.removeBonus();
+  }
+
+  Widget? getSale(CartProductData product) {
+    //Акция
+    if (product.sale == 0) {
+      return null;
+    } else {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadiusGeometry.circular(32),
+          color: Color(0xffF5A22D),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        height: 24,
+        child: Text(
+          "-${product.sale}%",
+          style: GoogleFonts.inknutAntiqua(fontSize: 14),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      );
+    }
+  }
+
   Widget GetCart() {
     return Column(
       children: CartRepository.getCart()
@@ -61,24 +96,7 @@ class CartState extends State<CartWidget> {
                             ),
                           ),
 
-                          //Акция
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadiusGeometry.circular(32),
-                              color: Color(0xffF5A22D),
-                            ),
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
-                            ),
-                            height: 24,
-                            child: Text(
-                              "-${product.sale}%",
-                              style: GoogleFonts.inknutAntiqua(fontSize: 14),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
+                          ?getSale(product),
 
                           Row(
                             spacing: 16,
@@ -99,7 +117,7 @@ class CartState extends State<CartWidget> {
                                 width: 90,
                                 alignment: AlignmentDirectional.center,
                                 child: Text(
-                                  "${(product.price - (product.price * (product.sale! / 100))) * product.count}р",
+                                  "${(product.price - (product.price * (product.sale / 100))) * product.count}р",
                                   style: GoogleFonts.inknutAntiqua(
                                     fontSize: 14,
                                   ),
@@ -121,6 +139,7 @@ class CartState extends State<CartWidget> {
                                               product.id,
                                               product.vol,
                                             );
+                                            OrderRepository.removeBonus();
                                           });
                                         },
                                         style: TextButton.styleFrom(
@@ -152,6 +171,7 @@ class CartState extends State<CartWidget> {
                                         onPressed: () {
                                           setState(() {
                                             CartRepository.add(product);
+                                            OrderRepository.removeBonus();
                                           });
                                         },
 
@@ -221,6 +241,8 @@ class CartState extends State<CartWidget> {
 
   @override
   Widget build(BuildContext context) {
+    OrderRepository.updateCallback();
+
     return Scaffold(
       appBar: AppBar(
         title: Column(
@@ -253,14 +275,15 @@ class CartState extends State<CartWidget> {
         actions: [
           IconButton(
             onPressed: () {
-              if(UserRepository.currentUser == null) {
+              if (UserRepository.currentUser == null) {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const AuthWidget()),
                 );
-              }
-              else {
+              } else {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const ProfileWidget()),
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileWidget(),
+                  ),
                 );
               }
             },
@@ -324,7 +347,7 @@ class CartState extends State<CartWidget> {
                         children: [
                           Expanded(
                             child: Text(
-                              "У вас есть бонусов: 0",
+                              "У вас есть бонусов: ${UserRepository.currentUser?.bonuses ?? 0}",
                               style: GoogleFonts.inknutAntiqua(fontSize: 14),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -332,12 +355,18 @@ class CartState extends State<CartWidget> {
                             ),
                           ),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              setState(() {
+                                useBonuses();
+                              });
+                            },
                             style: TextButton.styleFrom(
                               backgroundColor: Color(0xFFD3BD9E),
                             ),
                             child: Text(
-                              "Списать бонусы",
+                              useBonusFlag
+                                  ? "Оставить бонусы"
+                                  : "Списать бонусы",
                               style: GoogleFonts.inknutAntiqua(
                                 color: Color(0xff444444),
                               ),
@@ -392,7 +421,7 @@ class CartState extends State<CartWidget> {
                         ),
                         Expanded(
                           child: Text(
-                            ".....................................................",
+                            "..........................................................................................................",
                             style: GoogleFonts.inknutAntiqua(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -416,7 +445,7 @@ class CartState extends State<CartWidget> {
                         ),
                         Expanded(
                           child: Text(
-                            ".....................................................",
+                            "..........................................................................................................",
                             style: GoogleFonts.inknutAntiqua(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -440,14 +469,14 @@ class CartState extends State<CartWidget> {
                         ),
                         Expanded(
                           child: Text(
-                            ".....................................................",
+                            "..........................................................................................................",
                             style: GoogleFonts.inknutAntiqua(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         Text(
-                          "0",
+                          "${OrderRepository.currentOrder.bonuses}",
                           style: GoogleFonts.inknutAntiqua(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -456,7 +485,7 @@ class CartState extends State<CartWidget> {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      "Итого: ",
+                      "Итого: ${OrderRepository.getTotal()}",
                       style: GoogleFonts.inknutAntiqua(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -470,7 +499,14 @@ class CartState extends State<CartWidget> {
       ),
 
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () {
+          if (CartRepository.getCart().isNotEmpty) {
+            CartRepository.doOrder();
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => MainPageWidget()),
+            );
+          }
+        },
         backgroundColor: Color(0xFFD3BD9E),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadiusGeometry.circular(32),

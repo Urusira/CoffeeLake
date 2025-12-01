@@ -2,7 +2,7 @@ class CartProductData {
   final int id;
   final String name;
   double price;
-  double? sale;
+  double sale;
   final double vol;
   int count;
 

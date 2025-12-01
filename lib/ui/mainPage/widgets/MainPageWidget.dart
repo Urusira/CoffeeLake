@@ -8,8 +8,74 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../menu/widgets/MenuWidget.dart';
 
-class MainPageWidget extends StatelessWidget {
+class MainPageWidget extends StatefulWidget {
   const MainPageWidget({super.key});
+
+  @override
+  State<StatefulWidget> createState() => MainPageState();
+}
+
+class MainPageState extends State<MainPageWidget> {
+  Widget? getQrCard() {
+    if (UserRepository.currentUser != null) {
+      return Card(
+        color: Color(0xffd9d9d9),
+        shadowColor: Colors.black,
+        elevation: 4,
+        child: Row(
+          spacing: 16,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              spacing: 24,
+              children: [
+                SizedBox(
+                  width: 170,
+                  child: Text(
+                    "Покажите QR-код нашему бариста",
+                    textAlign: TextAlign.center,
+                    softWrap: true,
+                    style: GoogleFonts.inknutAntiqua(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 170,
+                  child: Text(
+                    "Ваши бонусы: ${UserRepository.currentUser?.bonuses}",
+                    textAlign: TextAlign.center,
+                    softWrap: true,
+                    style: GoogleFonts.inknutAntiqua(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 150,
+                  child: Text(
+                    "Вам доступен кофе за баллы!",
+                    textAlign: TextAlign.center,
+                    softWrap: true,
+                    style: GoogleFonts.inknutAntiqua(
+                      fontSize: 12,
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            QrImageView(data: "ТЫ ЧЕВО НАДЕЛАЛ", size: 200),
+          ],
+        ),
+      );
+    } else {
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +103,11 @@ class MainPageWidget extends StatelessWidget {
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
-            Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (context) => const MenuWidget()));
+            setState(() {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const MenuWidget()),
+              );
+            });
           },
           icon: Icon(Icons.shopping_cart),
         ),
@@ -47,16 +115,19 @@ class MainPageWidget extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              if(UserRepository.currentUser == null) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const AuthWidget()),
-                );
-              }
-              else {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const ProfileWidget()),
-                );
-              }
+              setState(() {
+                if (UserRepository.currentUser == null) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const AuthWidget()),
+                  );
+                } else {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ProfileWidget(),
+                    ),
+                  );
+                }
+              });
             },
             icon: Icon(Icons.person),
           ),
@@ -67,60 +138,7 @@ class MainPageWidget extends StatelessWidget {
         child: Column(
           spacing: 16,
           children: [
-            Card(
-              color: Color(0xffd9d9d9),
-              shadowColor: Colors.black,
-              elevation: 4,
-              child: Row(
-                spacing: 16,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    spacing: 24,
-                    children: [
-                      SizedBox(
-                        width: 170,
-                        child: Text(
-                          "Покажите QR-код нашему бариста",
-                          textAlign: TextAlign.center,
-                          softWrap: true,
-                          style: GoogleFonts.inknutAntiqua(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 170,
-                        child: Text(
-                          "Ваши бонусы: XXX",
-                          textAlign: TextAlign.center,
-                          softWrap: true,
-                          style: GoogleFonts.inknutAntiqua(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 150,
-                        child: Text(
-                          "Вам доступен кофе за баллы!",
-                          textAlign: TextAlign.center,
-                          softWrap: true,
-                          style: GoogleFonts.inknutAntiqua(
-                            fontSize: 12,
-                            decoration: TextDecoration.underline,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  QrImageView(data: "ТЫ ЧЕВО НАДЕЛАЛ", size: 200),
-                ],
-              ),
-            ),
+            ?getQrCard(),
             SizedBox(
               height: 205,
               child: (PageView(
