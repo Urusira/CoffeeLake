@@ -1,7 +1,10 @@
-import 'package:coffee_lake_app/ui/mainPage/widgets/MainPageWidget.dart';
+import 'package:coffee_lake_app/features/mainPage/view/MainPageWidget.dart';
 import 'package:flutter/material.dart';
 
+import 'core/di.dart';
+
 void main() {
+  diSetup();
   runApp(const MainApp());
 }
 
