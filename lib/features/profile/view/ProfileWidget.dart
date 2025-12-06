@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/di.dart';
 import '../../auth/data/models/UserData.dart';
+import '../domain/usecases/UpdateProfileUseCase.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({super.key});
@@ -36,11 +37,14 @@ class ProfileState extends State<ProfileWidget> {
     birthdayController.text = currentUser?.birthday ?? "";
   }
 
-  void SaveData() {
-    // AuthRepository.currentUser?.name = nameController.text;
-    // AuthRepository.currentUser?.phone = phoneController.text;
-    // AuthRepository.currentUser?.email = emailController.text;
-    // AuthRepository.currentUser?.birthday = birthdayController.text;
+  Future<void> SaveData() async {
+    di<UpdateProfileUseCase>().call(
+      nameController.text,
+      phoneController.text,
+      emailController.text,
+      birthdayController.text,
+    );
+    LoadData();
   }
 
   Future<void> selectBirthday() async {
@@ -202,7 +206,7 @@ class ProfileState extends State<ProfileWidget> {
                           fontSize: 16,
                           color: Color(0xff333333),
                         ),
-                      )
+                      ),
                     ),
                     Row(
                       children: [
@@ -212,7 +216,6 @@ class ProfileState extends State<ProfileWidget> {
                               editing = !editing;
                               if (!editing) {
                                 SaveData();
-                                LoadData();
                               }
                             });
                           },

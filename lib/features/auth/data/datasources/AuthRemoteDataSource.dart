@@ -1,5 +1,6 @@
 import 'package:coffee_lake_app/features/auth/data/models/AuthResponse.dart';
 import 'package:coffee_lake_app/features/auth/data/models/UserData.dart';
+import 'package:coffee_lake_app/features/profile/models/ShortUserData.dart';
 
 import '../../../../core/Network.dart';
 import '../../../../core/di.dart';
@@ -21,5 +22,12 @@ class AuthRemoteDataSource {
     catch (_) {
       return null;
     }
+  }
+
+  Future<void> updateProfile(ShortUserData user) async {
+    await di<Network>().dio.post(
+        '/profile/edit',
+        data: user.serialize(),
+    );
   }
 }

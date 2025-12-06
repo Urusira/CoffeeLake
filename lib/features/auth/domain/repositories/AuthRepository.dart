@@ -1,6 +1,7 @@
 import 'package:coffee_lake_app/features/auth/data/datasources/AuthRemoteDataSource.dart';
 import 'package:coffee_lake_app/features/auth/data/models/AuthResponse.dart';
 import 'package:coffee_lake_app/features/auth/data/models/UserData.dart';
+import 'package:coffee_lake_app/features/profile/models/ShortUserData.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../../../core/di.dart';
@@ -27,5 +28,9 @@ class AuthRepository {
 
   Future<String?> getToken() async {
     return di<FlutterSecureStorage>().read(key: 'poki');
+  }
+
+  Future<void> updateProfile(ShortUserData data) async {
+    remoteDataSource.updateProfile(data);
   }
 }
