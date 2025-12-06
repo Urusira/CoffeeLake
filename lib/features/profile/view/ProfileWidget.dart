@@ -38,13 +38,13 @@ class ProfileState extends State<ProfileWidget> {
   }
 
   Future<void> SaveData() async {
-    di<UpdateProfileUseCase>().call(
+    await di<UpdateProfileUseCase>().call(
       nameController.text,
       phoneController.text,
       emailController.text,
       birthdayController.text,
     );
-    LoadData();
+    await LoadData();
   }
 
   Future<void> selectBirthday() async {
