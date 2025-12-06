@@ -11,7 +11,7 @@ class Network {
     : dio = Dio(
         BaseOptions(
           baseUrl: 'https://maidenly-smart-dragonfly.cloudpub.ru/api/',
-          connectTimeout: const Duration(seconds: 1),
+          connectTimeout: const Duration(seconds: 10),
         ),
       ) {
     dio.interceptors.add(di<AddTokenInterceptor>());

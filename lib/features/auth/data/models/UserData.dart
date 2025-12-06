@@ -15,11 +15,11 @@ class UserData {
 
   factory UserData.deserialize(Map<String, dynamic> json) {
     return UserData(
-        name: json['name'],
+        name: json['name'].toString(),
         phone: json['phone'].toString(),
-        email: json['email'],
-        birthday: json['birthday'],
-        bonuses: json['bonuses'] as int
+        email: json['email'].toString(),
+        birthday: json['birthday'].toString(),
+        bonuses: json['bonuses'] as int,
     );
   }
 

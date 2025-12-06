@@ -17,7 +17,15 @@ class AuthRepository {
     return response;
   }
 
-  Future<UserData> getProfile() async {
+  void logout() async {
+    di<FlutterSecureStorage>().delete(key: 'poki');
+  }
+
+  Future<UserData?> getProfile() async {
     return await remoteDataSource.getProfile();
+  }
+
+  Future<String?> getToken() async {
+    return di<FlutterSecureStorage>().read(key: 'poki');
   }
 }

@@ -3,6 +3,9 @@ import 'package:coffee_lake_app/features/auth/view/AuthWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../core/di.dart';
+import '../../auth/data/models/UserData.dart';
+
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({super.key});
 
@@ -16,19 +19,21 @@ class ProfileState extends State<ProfileWidget> {
   final phoneController = TextEditingController();
   final emailController = TextEditingController();
   final birthdayController = TextEditingController();
+  UserData? currentUser;
 
   @override
   void initState() {
     super.initState();
+
     LoadData();
   }
 
-  void LoadData() {
-    // final user = AuthRepository.currentUser;
-    // nameController.text = user?.name ?? '';
-    // phoneController.text = user?.phone ?? '';
-    // emailController.text = user?.email ?? '';
-    // birthdayController.text = user?.birthday ?? '';
+  Future<void> LoadData() async {
+    currentUser = await di<AuthRepository>().getProfile();
+    nameController.text = currentUser?.name ?? "";
+    phoneController.text = currentUser?.phone ?? "";
+    emailController.text = currentUser?.email ?? "";
+    birthdayController.text = currentUser?.birthday ?? "";
   }
 
   void SaveData() {
@@ -87,7 +92,7 @@ class ProfileState extends State<ProfileWidget> {
         actions: [
           IconButton(
             onPressed: () {
-              //AuthRepository.LogOut();
+              di<AuthRepository>().logout();
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) => const AuthWidget()),
               );
@@ -184,30 +189,20 @@ class ProfileState extends State<ProfileWidget> {
                     ),
                     Container(
                       width: 235,
-                      child: editing
-                          ? TextField(
-                              controller: birthdayController,
-                              readOnly: true,
-                              onTap: selectBirthday,
-                              decoration: InputDecoration(
-                                hintText: 'Нажмите для выбора даты',
-                                hintStyle: GoogleFonts.inknutAntiqua(
-                                  fontSize: 16,
-                                  color: Color(0xff333333),
-                                ),
-                              ),
-                              style: GoogleFonts.inknutAntiqua(
-                                fontSize: 16,
-                                color: Color(0xff333333),
-                              ),
-                            )
-                          : Text(
-                              "${/*AuthRepository.currentUser?.birthday*/0}",
-                              style: GoogleFonts.inknutAntiqua(
-                                fontSize: 16,
-                                color: Color(0xff333333),
-                              ),
-                            ),
+                      child: TextField(
+                        controller: birthdayController,
+                        enabled: editing,
+                        onTap: selectBirthday,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: EdgeInsets.zero,
+                          hintText: 'Нажмите для выбора даты',
+                        ),
+                        style: GoogleFonts.inknutAntiqua(
+                          fontSize: 16,
+                          color: Color(0xff333333),
+                        ),
+                      )
                     ),
                     Row(
                       children: [

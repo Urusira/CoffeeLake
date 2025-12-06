@@ -7,5 +7,5 @@ class GetProfileUseCase {
 
   GetProfileUseCase(this.repository);
 
-  Future<UserData> call() => repository.getProfile();
+  Future<UserData?> call() => repository.getProfile();
 }

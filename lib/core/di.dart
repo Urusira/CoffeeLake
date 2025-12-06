@@ -13,9 +13,7 @@ final GetIt di = GetIt.instance;
 void diSetup() {
   di.registerLazySingleton(() => const FlutterSecureStorage());
 
-  di.registerLazySingleton(
-    () => AddTokenInterceptor(chest: di<FlutterSecureStorage>()),
-  );
+  di.registerLazySingleton(() => AddTokenInterceptor());
 
   di.registerLazySingleton(() => Network(di<FlutterSecureStorage>()));
   di.registerLazySingleton(() => di<Network>().dio);

@@ -13,8 +13,13 @@ class AuthRemoteDataSource {
     return AuthResponse.deserialize(response.data);
   }
 
-  Future<UserData> getProfile() async {
-    final response = await di<Network>().dio.get('/profile');
-    return UserData.deserialize(response.data);
+  Future<UserData?> getProfile() async {
+    try {
+      final response = await di<Network>().dio.get('/profile');
+      return UserData.deserialize(response.data);
+    }
+    catch (_) {
+      return null;
+    }
   }
 }

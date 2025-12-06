@@ -7,7 +7,7 @@ import 'package:lorem_ipsum/lorem_ipsum.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../core/di.dart';
-import '../../../core/providers/AuthProvider.dart';
+import '../../../services/ProfileService.dart';
 import '../../menu/view/MenuWidget.dart';
 import '../../profile/domain/usecases/GetProfileUseCase.dart';
 
@@ -117,24 +117,7 @@ class MainPageState extends State<MainPageWidget> {
         backgroundColor: Color(0xFFD3BD9E),
         actions: [
           IconButton(
-            onPressed: () async {
-              try {
-                final profile = await di<GetProfileUseCase>().call();
-                if (profile != null) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const ProfileWidget()),
-                  );
-                } else {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const AuthWidget()),
-                  );
-                }
-              } catch (e) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const AuthWidget()),
-                );
-              }
-            },
+            onPressed: () async {await ProfileService.openProfile(context);},
             icon: Icon(Icons.person),
           ),
         ],
