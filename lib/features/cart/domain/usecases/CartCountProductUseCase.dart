@@ -7,8 +7,6 @@ class CartCountProductUseCase {
 
 
    Future<int> call(int productId, double productVol) async {
-     //TODO: ДОДЕЛАТЬ ГОВНО
-     throw Exception("need realize todo!");
-     asdf
+     return cartRepository.count(productId, productVol);
    }
 }

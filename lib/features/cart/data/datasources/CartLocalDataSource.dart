@@ -73,13 +73,14 @@ class CartLocalDataSource {
 
   Future<void> addToCart(CartProductData product) async {
     List<Map<String, Object?>> query = await db.rawQuery(
-      'select id from $table1 where id = ? and vol = ?',
+      'select count from $table1 where id = ? and vol = ?',
       [product.id, product.vol],
     );
     if (query.isNotEmpty) {
+      final currentCount = query.first['count'] as int;
       await db.rawUpdate(
         'update $table1 set count = ? where id = ? and vol = ?',
-        [(query.first['count'] as int)+product.count, product.id, product.vol],
+        [currentCount+1, product.id, product.vol],
       );
     } else {
       await db.rawInsert(
@@ -98,17 +99,19 @@ class CartLocalDataSource {
 
   Future<void> removeFromCart(CartProductData product) async {
     List<Map<String, Object?>> query = await db.rawQuery(
-      'select id from $table1 where id = ? and vol = ?',
+      'select count from $table1 where id = ? and vol = ?',
       [product.id, product.vol],
     );
     if(query.isEmpty) return;
-    if (query.first['count'] as int > 1) {
+    final currentCount = query.first['count'] as int;
+    if (currentCount > 1) {
       await db.rawUpdate(
         'update $table1 set count = ? where id = ? and vol = ?',
-        [(query.first['count'] as int)+product.count, product.id, product.vol],
+        [currentCount-1, product.id, product.vol],
       );
     } else {
-      await db.rawDelete('delete from $table1 where id = ? and vol = ?',
+      await db.rawDelete(
+          'delete from $table1 where id = ? and vol = ?',
           [product.id, product.vol]);
     }
   }

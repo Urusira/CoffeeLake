@@ -33,4 +33,10 @@ class AuthRepository {
   Future<void> updateProfile(ShortUserData data) async {
     remoteDataSource.updateProfile(data);
   }
+
+  Future<int> getBonuses() async {
+    return await remoteDataSource.getBonuses();
+  }
+
+
 }

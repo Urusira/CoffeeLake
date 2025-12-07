@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'core/di.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   diSetup();
+
   await di<CartLocalDataSource>().init();
 
   runApp(const MainApp());

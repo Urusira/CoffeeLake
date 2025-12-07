@@ -242,7 +242,7 @@ class ProductDetailsState extends State<ProductDetailsWidget> {
                     loadedProductVolume,
                   ),
                   builder: (context, snapshot) {
-                    if (snapshot.hasData && snapshot.data!) {
+                    if (snapshot.hasData && !snapshot.data!) {
                       //Добавление товара
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -296,8 +296,16 @@ class ProductDetailsState extends State<ProductDetailsWidget> {
                           TextButton(
                             onPressed: () async {
                               await di<CartRemoveUseCase>().call(
-                                loadedProduct.id,
-                                loadedProductVolume,
+                                CartProductData(
+                                    id: loadedProduct.id,
+                                    name: loadedProduct.name,
+                                    price: getPrice(
+                                      loadedProduct,
+                                      loadedProductVolume,
+                                    ),
+                                    sale: loadedProduct.sale,
+                                    vol: loadedProductVolume,
+                                    count: 1)
                               );
                               setState(() {});
                             },

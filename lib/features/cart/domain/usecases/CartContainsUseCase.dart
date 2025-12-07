@@ -6,8 +6,6 @@ class CartContainsUseCase {
   CartContainsUseCase(this.cartRepository);
 
   Future<bool> call(int productId, double productVol) async {
-    //TODO: ДОДЕЛАТЬ ГОВНО
-    throw Exception("need realize todo!");
-    asdf
+    return cartRepository.contains(productId, productVol);
   }
 }

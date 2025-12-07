@@ -30,4 +30,11 @@ class AuthRemoteDataSource {
         data: user.serialize(),
     );
   }
+
+  Future<int> getBonuses() async {
+    var response = await di<Network>().dio.get(
+      '/profile/getb'
+    );
+    return response.data['bonuses'] as int;
+  }
 }

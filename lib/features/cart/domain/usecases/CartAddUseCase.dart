@@ -9,8 +9,6 @@ class CartAddUseCase {
 
 
   Future<void> call(CartProductData product) async {
-    //TODO: ДОДЕЛАТЬ ГОВНО
-    throw Exception("need realize todo!");
-    фыва
+    cartRepository.add(product);
   }
 }

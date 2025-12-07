@@ -1,15 +1,20 @@
-import 'package:coffee_lake_app/features/cart/domain/repositories/OrderRepository.dart';
 import 'package:coffee_lake_app/features/cart/domain/usecases/CartAddUseCase.dart';
-import 'package:coffee_lake_app/features/cart/domain/usecases/CartDoOrderUseCase.dart';
-import 'package:coffee_lake_app/features/cart/domain/usecases/CartGetTotalsUseCase.dart';
 import 'package:coffee_lake_app/features/cart/domain/usecases/CartGetUseCase.dart';
 import 'package:coffee_lake_app/features/cart/domain/usecases/CartRemoveUseCase.dart';
 import 'package:coffee_lake_app/features/product/data/models/CartProductData.dart';
+import 'package:coffee_lake_app/features/profile/domain/usecases/GetProfileUseCase.dart';
+import 'package:coffee_lake_app/features/profile/domain/usecases/ProfileGetBonusesUseCase.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/di.dart';
 import '../../../services/ProfileService.dart';
+import '../../order/domain/usecases/GetBonusesFlagUseCase.dart';
+import '../../order/domain/usecases/OrderGetTotalsUseCase.dart';
+import '../../order/domain/usecases/OrderGetUsedBonusesUseCase.dart';
+import '../../order/domain/usecases/OrderPushUseCase.dart';
+import '../../order/domain/usecases/OrderRecalUsedBonusesUseCase.dart';
+import '../../order/domain/usecases/OrderToggleBonusesUseCase.dart';
 
 class CartWidget extends StatefulWidget {
   const CartWidget({super.key});
@@ -19,16 +24,7 @@ class CartWidget extends StatefulWidget {
 }
 
 class CartState extends State<CartWidget> {
-  bool useBonusFlag = false;
-
-  void useBonuses() {
-    //TODO ДОПИЛИТЬ
-    // if ((AuthRepository.currentUser?.bonuses ?? 0) == 0) {
-    //   return;
-    // }
-    // useBonusFlag = !useBonusFlag;
-    // useBonusFlag ? OrderRepository.useBonus() : OrderRepository.removeBonus();
-  }
+  bool useBonusFlag = di<GetBonusesFlagUseCase>().call();
 
   Widget? getSale(CartProductData product) {
     //Акция
@@ -142,11 +138,11 @@ class CartState extends State<CartWidget> {
                                   TextButton(
                                     onPressed: () async {
                                       await di<CartRemoveUseCase>().call(
-                                        product.id,
-                                        product.vol,
+                                        product,
                                       );
+                                      await di<OrderRecalUsedBonusesUseCase>()
+                                          .call();
                                       setState(() {});
-                                      OrderRepository.removeBonus();
                                     },
                                     style: TextButton.styleFrom(
                                       shape: RoundedRectangleBorder(
@@ -173,8 +169,9 @@ class CartState extends State<CartWidget> {
                                   TextButton(
                                     onPressed: () async {
                                       await di<CartAddUseCase>().call(product);
+                                      await di<OrderRecalUsedBonusesUseCase>()
+                                          .call();
                                       setState(() {});
-                                      OrderRepository.removeBonus();
                                     },
                                     style: TextButton.styleFrom(
                                       shape: RoundedRectangleBorder(
@@ -240,8 +237,6 @@ class CartState extends State<CartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    OrderRepository.updateCallback();
-
     return Scaffold(
       appBar: AppBar(
         title: Column(
@@ -335,27 +330,32 @@ class CartState extends State<CartWidget> {
                       Row(
                         children: [
                           Expanded(
-                            child: Text(
-                              "У вас есть бонусов: ${ /*AuthRepository.currentUser?.bonuses ?? */ 0}",
-                              // TODO ДОПИЛИТЬ
-                              style: GoogleFonts.inknutAntiqua(fontSize: 14),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.start,
+                            child:
+
+                            FutureBuilder(
+                              future: di<ProfileGetBonusesUseCase>().call(),
+                              builder: (context, snapshot) {
+                                return Text(
+                                  "У вас есть бонусов: ${snapshot.data ?? 0}",
+                                  style: GoogleFonts.inknutAntiqua(fontSize: 14),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.start,
+                                );
+                              },
                             ),
                           ),
                           TextButton(
-                            onPressed: () {
-                              setState(() {
-                                useBonuses();
-                              });
+                            onPressed: () async {
+                              await di<OrderToggleBonusesUseCase>().call();
+                              useBonusFlag = di<GetBonusesFlagUseCase>().call();
+                              setState(() {});
                             },
                             style: TextButton.styleFrom(
                               backgroundColor: Color(0xFFD3BD9E),
                             ),
                             child: Text(
-                              useBonusFlag
-                                  ? "Оставить бонусы"
+                              useBonusFlag ? "Оставить бонусы"
                                   : "Списать бонусы",
                               style: GoogleFonts.inknutAntiqua(
                                 color: Color(0xff444444),
@@ -418,7 +418,7 @@ class CartState extends State<CartWidget> {
                           ),
                         ),
                         FutureBuilder(
-                          future: di<CartGetTotalsUseCase>().call(),
+                          future: di<OrderGetTotalsUseCase>().call(),
                           builder: (context, snapshot) {
                             return Text(
                               "${snapshot.data?['withoutSale'] ?? 0}р",
@@ -447,7 +447,7 @@ class CartState extends State<CartWidget> {
                           ),
                         ),
                         FutureBuilder(
-                          future: di<CartGetTotalsUseCase>().call(),
+                          future: di<OrderGetTotalsUseCase>().call(),
                           builder: (context, snapshot) {
                             return Text(
                               "${snapshot.data?['withSale'] ?? 0}р",
@@ -475,17 +475,22 @@ class CartState extends State<CartWidget> {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        Text(
-                          "${OrderRepository.currentOrder.bonuses}",
-                          style: GoogleFonts.inknutAntiqua(),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        FutureBuilder(
+                          future: di<OrderGetUsedBonusesUseCase>().call(),
+                          builder: (context, snapshot) {
+                            return Text(
+                              "${snapshot.data!}",
+                              style: GoogleFonts.inknutAntiqua(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            );
+                          },
                         ),
                       ],
                     ),
                     SizedBox(height: 8),
                     FutureBuilder(
-                      future: di<CartGetTotalsUseCase>().call(),
+                      future: di<OrderGetTotalsUseCase>().call(),
                       builder: (context, snapshot) {
                         return Text(
                           "${snapshot.data?['total'] ?? 0}р",
@@ -505,10 +510,26 @@ class CartState extends State<CartWidget> {
 
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          di<CartDoOrderUseCase>().call();
+          if(await di<GetProfileUseCase>().call() == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Для заказа требуется авторизация',
+                ),
+              ),
+            );
+            return;
+          }
+
+          await di<OrderPushUseCase>().call();
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Заказ оформлен, вам позвонят, когда он будет готов.'))
+            SnackBar(
+              content: Text(
+                'Заказ оформлен, вам позвонят, когда он будет готов.',
+              ),
+            ),
           );
+          setState(() {});
         },
         backgroundColor: Color(0xFFD3BD9E),
         shape: RoundedRectangleBorder(

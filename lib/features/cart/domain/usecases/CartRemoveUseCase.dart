@@ -1,3 +1,5 @@
+import 'package:coffee_lake_app/features/product/data/models/CartProductData.dart';
+
 import '../repositories/CartRepository.dart';
 
 class CartRemoveUseCase {
@@ -5,9 +7,7 @@ class CartRemoveUseCase {
 
   CartRemoveUseCase(this.cartRepository);
 
-  Future<void> call(int productId, double productVol) async {
-    //TODO: ДОДЕЛАТЬ ГОВНО
-    throw Exception("need realize todo!");
-    asdf
+  Future<void> call(CartProductData product) async {
+    cartRepository.remove(product);
   }
 }

@@ -1,10 +1,8 @@
 import 'package:coffee_lake_app/features/cart/data/datasources/CartLocalDataSource.dart';
 
 import '../../../product/data/models/CartProductData.dart';
-import 'OrderRepository.dart';
 
 class CartRepository {
-
   CartLocalDataSource cartLocalDataSource;
 
   CartRepository(this.cartLocalDataSource);
@@ -13,9 +11,8 @@ class CartRepository {
     return cartLocalDataSource.getCart();
   }
 
-  Future<List<double>> getTotals() async {
+  Future<Map<String, double>> getTotals() async {
     List<CartProductData> cartList = await cartLocalDataSource.getCart();
-    List<double> res = List.empty(growable: true);
     double baseTotal = 0;
     double fullTotal = 0;
 
@@ -24,13 +21,10 @@ class CartRepository {
       fullTotal += (it.price - (it.price * (it.sale / 100))) * it.count;
     }
 
-    res.addAll([baseTotal, fullTotal]);
-    return List.unmodifiable(res);
-  }
-
-  Future<void> doOrder() async {
-    OrderRepository.push();
-    cartLocalDataSource.clearAll();
+    return {
+      'withoutSale': baseTotal,
+      'withSale': fullTotal
+    };
   }
 
   Future<void> add(CartProductData product) async {
@@ -55,5 +49,9 @@ class CartRepository {
 
   Future<bool> contains(int productId, double productVol) async {
     return await getByIdVol(productId, productVol) != null;
+  }
+
+  Future<void> clearAll() async {
+    await cartLocalDataSource.clearAll();
   }
 }
