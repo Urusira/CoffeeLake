@@ -1,6 +1,4 @@
 import 'package:coffee_lake_app/features/auth/domain/repositories/AuthRepository.dart';
-import 'package:coffee_lake_app/features/auth/view/AuthWidget.dart';
-import 'package:coffee_lake_app/features/profile/view/ProfileWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lorem_ipsum/lorem_ipsum.dart';
@@ -8,8 +6,8 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../core/di.dart';
 import '../../../services/ProfileService.dart';
+import '../../auth/data/models/UserData.dart';
 import '../../menu/view/MenuWidget.dart';
-import '../../profile/domain/usecases/GetProfileUseCase.dart';
 
 class MainPageWidget extends StatefulWidget {
   const MainPageWidget({super.key});
@@ -19,67 +17,6 @@ class MainPageWidget extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPageWidget> {
-  // Widget? getQrCard() {
-  //   if (AuthRepository.currentUser != null) {
-  //     return Card(
-  //       color: Color(0xffd9d9d9),
-  //       shadowColor: Colors.black,
-  //       elevation: 4,
-  //       child: Row(
-  //         spacing: 16,
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           Column(
-  //             spacing: 24,
-  //             children: [
-  //               SizedBox(
-  //                 width: 170,
-  //                 child: Text(
-  //                   "Покажите QR-код нашему бариста",
-  //                   textAlign: TextAlign.center,
-  //                   softWrap: true,
-  //                   style: GoogleFonts.inknutAntiqua(
-  //                     fontSize: 16,
-  //                     fontWeight: FontWeight.w300,
-  //                   ),
-  //                 ),
-  //               ),
-  //               SizedBox(
-  //                 width: 170,
-  //                 child: Text(
-  //                   "Ваши бонусы: ${AuthRepository.currentUser?.bonuses}",
-  //                   textAlign: TextAlign.center,
-  //                   softWrap: true,
-  //                   style: GoogleFonts.inknutAntiqua(
-  //                     fontSize: 16,
-  //                     fontWeight: FontWeight.w300,
-  //                   ),
-  //                 ),
-  //               ),
-  //               SizedBox(
-  //                 width: 150,
-  //                 child: Text(
-  //                   "Вам доступен кофе за баллы!",
-  //                   textAlign: TextAlign.center,
-  //                   softWrap: true,
-  //                   style: GoogleFonts.inknutAntiqua(
-  //                     fontSize: 12,
-  //                     decoration: TextDecoration.underline,
-  //                     fontWeight: FontWeight.w500,
-  //                   ),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //           QrImageView(data: "ТЫ ЧЕВО НАДЕЛАЛ", size: 200),
-  //         ],
-  //       ),
-  //     );
-  //   } else {
-  //     return null;
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,7 +54,9 @@ class MainPageState extends State<MainPageWidget> {
         backgroundColor: Color(0xFFD3BD9E),
         actions: [
           IconButton(
-            onPressed: () async {await ProfileService.openProfile(context);},
+            onPressed: () async {
+              await ProfileService.openProfile(context);
+            },
             icon: Icon(Icons.person),
           ),
         ],
@@ -127,7 +66,113 @@ class MainPageState extends State<MainPageWidget> {
         child: Column(
           spacing: 16,
           children: [
-            //?getQrCard(),
+            FutureBuilder(
+              future: di<AuthRepository>().getProfile(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Card(
+                    color: Color(0xffd9d9d9),
+                    shadowColor: Colors.black,
+                    elevation: 4,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container (
+                          padding: EdgeInsets.symmetric(vertical: 48),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                width: 300,
+                                child: Text(
+                                  "Зарегистрируйтесь, накапливайте баллы - получайте бесплатный кофе!",
+                                  textAlign: TextAlign.center,
+                                  softWrap: true,
+                                  style: GoogleFonts.inknutAntiqua(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                } else {
+                  UserData? currentUser = snapshot.data;
+
+                  return Column(
+                    spacing: 8,
+                    children: [
+                      Text (
+                        "Добро пожаловать,\n${currentUser?.name}!",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.inknutAntiqua(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      Card(
+                        color: Color(0xffd9d9d9),
+                        shadowColor: Colors.black,
+                        elevation: 4,
+                        child: Row(
+                          spacing: 16,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Column(
+                              spacing: 24,
+                              children: [
+                                SizedBox(
+                                  width: 170,
+                                  child: Text(
+                                    "Покажите QR-код нашему бариста",
+                                    textAlign: TextAlign.center,
+                                    softWrap: true,
+                                    style: GoogleFonts.inknutAntiqua(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 170,
+                                  child: Text(
+                                    "Ваши бонусы: ${currentUser?.bonuses ?? 0}",
+                                    textAlign: TextAlign.center,
+                                    softWrap: true,
+                                    style: GoogleFonts.inknutAntiqua(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 150,
+                                  child: Text(
+                                    "Вам доступен кофе за баллы!",
+                                    textAlign: TextAlign.center,
+                                    softWrap: true,
+                                    style: GoogleFonts.inknutAntiqua(
+                                      fontSize: 12,
+                                      decoration: TextDecoration.underline,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            QrImageView(data: "ТЫ ЧЕВО НАДЕЛАЛ", size: 200),
+                          ],
+                        ),
+                      ),
+                    ]
+                  );
+                }
+              },
+            ),
+
             SizedBox(
               height: 205,
               child: (PageView(

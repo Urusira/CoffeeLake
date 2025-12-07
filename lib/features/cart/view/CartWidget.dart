@@ -6,7 +6,9 @@ import 'package:coffee_lake_app/features/mainPage/view/MainPageWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../services/ProfileService.dart';
 import '../../auth/domain/repositories/AuthRepository.dart';
+import '../../menu/view/MenuWidget.dart';
 import '../../profile/view/ProfileWidget.dart';
 
 class CartWidget extends StatefulWidget {
@@ -256,7 +258,7 @@ class CartState extends State<CartWidget> {
             ),
             SizedBox(height: 2),
             Text(
-              "Корзина",
+              "Главная",
               style: GoogleFonts.inknutAntiqua(
                 color: Color(0xff444444),
                 fontSize: 18,
@@ -274,18 +276,8 @@ class CartState extends State<CartWidget> {
         backgroundColor: Color(0xFFD3BD9E),
         actions: [
           IconButton(
-            onPressed: () {
-              // if (AuthRepository.currentUser == null) {
-              //   Navigator.of(context).push(
-              //     MaterialPageRoute(builder: (context) => const AuthWidget()),
-              //   );
-              // } else {
-              //   Navigator.of(context).push(
-              //     MaterialPageRoute(
-              //       builder: (context) => const ProfileWidget(),
-              //     ),
-              //   );
-              // }
+            onPressed: () async {
+              await ProfileService.openProfile(context);
             },
             icon: Icon(Icons.person),
           ),

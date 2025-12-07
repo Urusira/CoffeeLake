@@ -35,6 +35,7 @@ class ProfileState extends State<ProfileWidget> {
     phoneController.text = currentUser?.phone ?? "";
     emailController.text = currentUser?.email ?? "";
     birthdayController.text = currentUser?.birthday ?? "";
+    setState(() {});
   }
 
   Future<void> SaveData() async {
@@ -64,6 +65,12 @@ class ProfileState extends State<ProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if(currentUser == null) {
+      return SizedBox(
+        height: 350,
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         title: Column(

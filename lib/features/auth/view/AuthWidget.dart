@@ -92,7 +92,7 @@ class AuthState extends State<AuthWidget>{
                           await di<AuthUseCase>().call(phoneController.text);
                           Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (_) => MainPageWidget())
+                              MaterialPageRoute(builder: (_) => ProfileWidget())
                           );
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(

@@ -1,13 +1,12 @@
-import 'package:coffee_lake_app/features/mainPage/domain/repositories/Fake.dart';
-import 'package:coffee_lake_app/features/auth/view/AuthWidget.dart';
 import 'package:coffee_lake_app/features/cart/view/CartWidget.dart';
+import 'package:coffee_lake_app/features/menu/domain/usecases/GetMenuUseCase.dart';
 import 'package:coffee_lake_app/features/menu/view/ProductDetailsWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lorem_ipsum/lorem_ipsum.dart';
 
-import '../../auth/domain/repositories/AuthRepository.dart';
-import '../../profile/view/ProfileWidget.dart';
+import '../../../core/di.dart';
+import '../../../services/ProfileService.dart';
 
 class MenuWidget extends StatefulWidget {
   const MenuWidget({super.key});
@@ -17,97 +16,6 @@ class MenuWidget extends StatefulWidget {
 }
 
 class MenuState extends State<MenuWidget> {
-  Widget getMenu() {
-    //Карточка товара
-    return Column(
-      children: Fake.getProducts()
-          .map(
-            (product) => Card(
-              elevation: 0,
-              color: Colors.transparent,
-              child: Row(
-                children: [
-                  //Фото товара
-                  Icon(Icons.coffee_outlined, size: 150),
-
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 4,
-                    children: [
-                      //Название
-                      SizedBox(
-                        width: 220,
-                        child: Text(
-                          product.name,
-                          style: GoogleFonts.inknutAntiqua(
-                            fontSize: 21,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      ),
-
-                      //Описание
-                      SizedBox(
-                        width: 220,
-                        child: Text(
-                          product.description,
-                          style: GoogleFonts.inknutAntiqua(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          textAlign: TextAlign.justify,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        ),
-                      ),
-
-                      //Отступ
-                      SizedBox(height: 4),
-
-                      //Кнопка "В корзину"
-                      ElevatedButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => Dialog(
-                              backgroundColor: Colors.transparent,
-                              child: ProductDetailsWidget(
-                                productId: product.id,
-                              ),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(32),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 0,
-                          ),
-                          backgroundColor: Color(0x70ffffff),
-                        ),
-                        child: Text(
-                          "От ${product.basePrice.first} р",
-                          style: GoogleFonts.inknutAntiqua(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w300,
-                            color: Color(0xff222222),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          )
-          .toList(),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,7 +31,7 @@ class MenuState extends State<MenuWidget> {
             ),
             SizedBox(height: 2),
             Text(
-              "Меню",
+              "Главная",
               style: GoogleFonts.inknutAntiqua(
                 color: Color(0xff444444),
                 fontSize: 18,
@@ -141,17 +49,8 @@ class MenuState extends State<MenuWidget> {
         backgroundColor: Color(0xFFD3BD9E),
         actions: [
           IconButton(
-            onPressed: () {
-              // if(AuthRepository.currentUser == null) {
-              //   Navigator.of(context).push(
-              //     MaterialPageRoute(builder: (context) => const AuthWidget()),
-              //   );
-              // }
-              // else {
-              //   Navigator.of(context).push(
-              //     MaterialPageRoute(builder: (context) => const ProfileWidget()),
-              //   );
-              // }
+            onPressed: () async {
+              await ProfileService.openProfile(context);
             },
             icon: Icon(Icons.person),
           ),
@@ -369,7 +268,124 @@ class MenuState extends State<MenuWidget> {
                     ),
                   ),
 
-                  getMenu(),
+                  FutureBuilder(
+                    future: di<GetMenuUseCase>().call(),
+                    builder: (context, snapshot) {
+                      try {
+                        if (snapshot.hasData) {
+                          return Column(
+                            children: snapshot.data!.menuList
+                                .map(
+                                  (item) => Card(
+                                    elevation: 0,
+                                    color: Colors.transparent,
+                                    child: Row(
+                                      children: [
+                                        //Фото товара
+                                        Icon(Icons.coffee_outlined, size: 150),
+
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          spacing: 4,
+                                          children: [
+                                            //Название
+                                            SizedBox(
+                                              width: 220,
+                                              child: Text(
+                                                item.name,
+                                                style:
+                                                    GoogleFonts.inknutAntiqua(
+                                                      fontSize: 21,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                              ),
+                                            ),
+
+                                            //Описание
+                                            SizedBox(
+                                              width: 220,
+                                              child: Text(
+                                                item.description,
+                                                style:
+                                                    GoogleFonts.inknutAntiqua(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                textAlign: TextAlign.justify,
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 2,
+                                              ),
+                                            ),
+
+                                            //Отступ
+                                            SizedBox(height: 4),
+
+                                            //Кнопка "В корзину"
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) => Dialog(
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    child: ProductDetailsWidget(
+                                                      productId: item.id,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 12,
+                                                  vertical: 0,
+                                                ),
+                                                backgroundColor: Color(
+                                                  0x70ffffff,
+                                                ),
+                                              ),
+                                              child: Text(
+                                                "От ${item.basePrice.first} р",
+                                                style:
+                                                    GoogleFonts.inknutAntiqua(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w300,
+                                                      color: Color(0xff222222),
+                                                    ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          );
+                        } else {
+                          return SizedBox(
+                            height: 350,
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+                      } catch (_) {
+                        return SizedBox(
+                          width: 200,
+                          height: 200,
+                          child: Text("Ошибка загрузки данных"),
+                        );
+                      }
+                    },
+                  ),
 
                   SizedBox(height: 81),
                 ],

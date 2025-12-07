@@ -10,7 +10,7 @@ class ProfileService {
     final profile = await di<GetProfileUseCase>().call();
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => profile != null ? ProfileWidget() : AuthWidget(),
+        builder: (context) => profile != null ? ProfileWidget() : AuthWidget(),
       ),
     );
   }
