@@ -1,14 +1,20 @@
+import 'package:coffee_lake_app/features/cart/data/datasources/CartLocalDataSource.dart';
+
 import '../../../product/data/models/CartProductData.dart';
 import 'OrderRepository.dart';
 
 class CartRepository {
-  static List<CartProductData> cartList = List.empty(growable: true);
 
-  static List<CartProductData> getCart() {
-    return cartList;
+  CartLocalDataSource cartLocalDataSource;
+
+  CartRepository(this.cartLocalDataSource);
+
+  Future<List<CartProductData>> getCart() {
+    return cartLocalDataSource.getCart();
   }
 
-  static List<double> getTotals() {
+  Future<List<double>> getTotals() async {
+    List<CartProductData> cartList = await cartLocalDataSource.getCart();
     List<double> res = List.empty(growable: true);
     double baseTotal = 0;
     double fullTotal = 0;
@@ -22,56 +28,32 @@ class CartRepository {
     return List.unmodifiable(res);
   }
 
-  static void doOrder() {
+  Future<void> doOrder() async {
     OrderRepository.push();
-    cartList = List.empty(growable: true);
+    cartLocalDataSource.clearAll();
   }
 
-  static void add(CartProductData product) {
-    CartProductData? inCartProduct = getByIdVol(product.id, product.vol);
-    if (inCartProduct != null) {
-      inCartProduct.count++;
-    } else {
-      cartList.add(product);
-    }
+  Future<void> add(CartProductData product) async {
+    cartLocalDataSource.addToCart(product);
   }
 
-  static void remove(int productId, double vol) {
-    CartProductData? inCartProduct = getByIdVol(productId, vol);
-
-    if (inCartProduct != null && inCartProduct.count > 1) {
-      inCartProduct.count--;
-    } else {
-      cartList.remove(getByIdVol(productId, vol));
-    }
+  Future<void> remove(CartProductData product) async {
+    cartLocalDataSource.removeFromCart(product);
   }
 
-  static int count(int id, double vol) {
-    CartProductData? product = getByIdVol(id, vol);
+  Future<int> count(int id, double vol) async {
+    CartProductData? product = await cartLocalDataSource.getProduct(id, vol);
     if (product != null) {
       return product.count;
     }
     return 0;
   }
 
-  static CartProductData? getByIdVol(int id, double vol) {
-    CartProductData? res;
-    for (CartProductData it in cartList) {
-      if (it.id == id && it.vol == vol) {
-        res = it;
-      }
-    }
-    return res;
+  Future<CartProductData?> getByIdVol(int productId, double productVol) async {
+    return await cartLocalDataSource.getProduct(productId, productVol);
   }
 
-  static bool contains(int id, double vol) {
-    bool res = false;
-    for (CartProductData it in cartList) {
-      if (it.id == id && it.vol == vol) {
-        res = true;
-        continue;
-      }
-    }
-    return res;
+  Future<bool> contains(int productId, double productVol) async {
+    return await getByIdVol(productId, productVol) != null;
   }
 }

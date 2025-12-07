@@ -1,15 +1,15 @@
-import 'package:coffee_lake_app/features/product/data/models/CartProductData.dart';
-import 'package:coffee_lake_app/features/cart/domain/repositories/CartRepository.dart';
 import 'package:coffee_lake_app/features/cart/domain/repositories/OrderRepository.dart';
-import 'package:coffee_lake_app/features/auth/view/AuthWidget.dart';
-import 'package:coffee_lake_app/features/mainPage/view/MainPageWidget.dart';
+import 'package:coffee_lake_app/features/cart/domain/usecases/CartAddUseCase.dart';
+import 'package:coffee_lake_app/features/cart/domain/usecases/CartDoOrderUseCase.dart';
+import 'package:coffee_lake_app/features/cart/domain/usecases/CartGetTotalsUseCase.dart';
+import 'package:coffee_lake_app/features/cart/domain/usecases/CartGetUseCase.dart';
+import 'package:coffee_lake_app/features/cart/domain/usecases/CartRemoveUseCase.dart';
+import 'package:coffee_lake_app/features/product/data/models/CartProductData.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../core/di.dart';
 import '../../../services/ProfileService.dart';
-import '../../auth/domain/repositories/AuthRepository.dart';
-import '../../menu/view/MenuWidget.dart';
-import '../../profile/view/ProfileWidget.dart';
 
 class CartWidget extends StatefulWidget {
   const CartWidget({super.key});
@@ -22,6 +22,7 @@ class CartState extends State<CartWidget> {
   bool useBonusFlag = false;
 
   void useBonuses() {
+    //TODO ДОПИЛИТЬ
     // if ((AuthRepository.currentUser?.bonuses ?? 0) == 0) {
     //   return;
     // }
@@ -51,183 +52,176 @@ class CartState extends State<CartWidget> {
     }
   }
 
-  Widget GetCart() {
-    return Column(
-      children: CartRepository.getCart()
-          .map(
-            (product) =>
-                //Карточка товара
-                Card(
-                  elevation: 0,
-                  color: Colors.transparent,
-                  child: Row(
+  Widget? getCartList() {
+    return FutureBuilder(
+      future: di<CartGetUseCase>().call(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const SizedBox();
+        }
+
+        final cart = snapshot.data!;
+
+        return Column(
+          children: cart.map((product) {
+            final priceWithSale =
+                (product.price - product.price * (product.sale / 100)) *
+                product.count;
+
+            return Card(
+              elevation: 0,
+              color: Colors.transparent,
+              child: Row(
+                children: [
+                  const Icon(Icons.coffee_outlined, size: 150),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 4,
                     children: [
-                      //Фото товара
-                      Icon(Icons.coffee_outlined, size: 150),
+                      // Название
+                      SizedBox(
+                        width: 220,
+                        child: Text(
+                          product.name,
+                          style: GoogleFonts.inknutAntiqua(
+                            fontSize: 21,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
 
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 4,
+                      // Объём
+                      SizedBox(
+                        width: 220,
+                        child: Text(
+                          "${product.vol}",
+                          style: GoogleFonts.inknutAntiqua(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w300,
+                          ),
+                          textAlign: TextAlign.justify,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+
+                      getSale(product) ?? const SizedBox(),
+
+                      Row(
+                        spacing: 16,
                         children: [
-                          //Название
-                          SizedBox(
-                            width: 220,
+                          // Цена
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadiusGeometry.circular(32),
+                              color: const Color(0xffDD9E44),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 2,
+                            ),
+                            height: 28,
+                            width: 90,
+                            alignment: AlignmentDirectional.center,
                             child: Text(
-                              product.name,
-                              style: GoogleFonts.inknutAntiqua(
-                                fontSize: 21,
-                                fontWeight: FontWeight.w400,
-                              ),
-                              overflow: TextOverflow.ellipsis,
+                              "${priceWithSale}р",
+                              style: GoogleFonts.inknutAntiqua(fontSize: 14),
                               maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
 
-                          //Объём
-                          SizedBox(
-                            width: 220,
-                            child: Text(
-                              "${product.vol}",
-                              style: GoogleFonts.inknutAntiqua(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w300,
-                              ),
-                              textAlign: TextAlign.justify,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                            ),
-                          ),
-
-                          ?getSale(product),
-
-                          Row(
-                            spacing: 16,
+                          // Счётчик
+                          Stack(
                             children: [
-                              //Цена
+                              Row(
+                                spacing: 32,
+                                children: [
+                                  TextButton(
+                                    onPressed: () async {
+                                      await di<CartRemoveUseCase>().call(
+                                        product.id,
+                                        product.vol,
+                                      );
+                                      setState(() {});
+                                      OrderRepository.removeBonus();
+                                    },
+                                    style: TextButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(32),
+                                      ),
+                                      minimumSize: const Size(48, 28),
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                      backgroundColor: const Color(0xffD3BD9E),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 0,
+                                      ),
+                                      alignment:
+                                          AlignmentDirectional.centerStart,
+                                    ),
+                                    child: Text(
+                                      '-',
+                                      style: GoogleFonts.inknutAntiqua(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      await di<CartAddUseCase>().call(product);
+                                      setState(() {});
+                                      OrderRepository.removeBonus();
+                                    },
+                                    style: TextButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(32),
+                                      ),
+                                      minimumSize: const Size(48, 28),
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                      backgroundColor: const Color(0xffD3BD9E),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 0,
+                                      ),
+                                      alignment: AlignmentDirectional.centerEnd,
+                                    ),
+                                    child: Text(
+                                      '+',
+                                      style: GoogleFonts.inknutAntiqua(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                               Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadiusGeometry.circular(
                                     32,
                                   ),
-                                  color: Color(0xffDD9E44),
+                                  color: const Color(0xffB09268),
                                 ),
-                                padding: EdgeInsets.symmetric(
+                                width: 81,
+                                height: 28,
+                                padding: const EdgeInsets.symmetric(
                                   horizontal: 12,
                                   vertical: 2,
                                 ),
-                                height: 28,
-                                width: 90,
-                                alignment: AlignmentDirectional.center,
+                                margin: const EdgeInsets.only(left: 24),
                                 child: Text(
-                                  "${(product.price - (product.price * (product.sale / 100))) * product.count}р",
+                                  "${product.count}",
                                   style: GoogleFonts.inknutAntiqua(
-                                    fontSize: 14,
+                                    fontSize: 15,
                                   ),
+                                  textAlign: TextAlign.center,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-
-                              //Счётчик
-                              Stack(
-                                children: [
-                                  Row(
-                                    spacing: 32,
-                                    children: [
-                                      TextButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            CartRepository.remove(
-                                              product.id,
-                                              product.vol,
-                                            );
-                                            OrderRepository.removeBonus();
-                                          });
-                                        },
-                                        style: TextButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              32,
-                                            ),
-                                          ),
-                                          minimumSize: Size(48, 28),
-                                          tapTargetSize:
-                                              MaterialTapTargetSize.shrinkWrap,
-                                          backgroundColor: Color(0xffD3BD9E),
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 0,
-                                          ),
-                                          alignment:
-                                              AlignmentDirectional.centerStart,
-                                        ),
-                                        child: Text(
-                                          '-',
-                                          style: GoogleFonts.inknutAntiqua(
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ),
-
-                                      TextButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            CartRepository.add(product);
-                                            OrderRepository.removeBonus();
-                                          });
-                                        },
-
-                                        style: TextButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              32,
-                                            ),
-                                          ),
-                                          minimumSize: Size(48, 28),
-                                          tapTargetSize:
-                                              MaterialTapTargetSize.shrinkWrap,
-                                          backgroundColor: Color(0xffD3BD9E),
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 0,
-                                          ),
-                                          alignment:
-                                              AlignmentDirectional.centerEnd,
-                                        ),
-                                        child: Text(
-                                          '+',
-                                          style: GoogleFonts.inknutAntiqua(
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadiusGeometry.circular(32),
-                                      color: Color(0xffB09268),
-                                    ),
-                                    width: 81,
-                                    height: 28,
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 2,
-                                    ),
-                                    margin: EdgeInsets.fromLTRB(24, 0, 0, 0),
-                                    child: Text(
-                                      "${product.count}",
-                                      style: GoogleFonts.inknutAntiqua(
-                                        fontSize: 15,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
                               ),
                             ],
                           ),
@@ -235,9 +229,12 @@ class CartState extends State<CartWidget> {
                       ),
                     ],
                   ),
-                ),
-          )
-          .toList(),
+                ],
+              ),
+            );
+          }).toList(),
+        );
+      },
     );
   }
 
@@ -296,7 +293,7 @@ class CartState extends State<CartWidget> {
                   child: (ListView(
                     scrollDirection: Axis.vertical,
                     children: [
-                      GetCart(),
+                      ?getCartList(),
 
                       SizedBox(height: 32),
 
@@ -339,7 +336,8 @@ class CartState extends State<CartWidget> {
                         children: [
                           Expanded(
                             child: Text(
-                              "У вас есть бонусов: ${/*AuthRepository.currentUser?.bonuses ?? */0}",
+                              "У вас есть бонусов: ${ /*AuthRepository.currentUser?.bonuses ?? */ 0}",
+                              // TODO ДОПИЛИТЬ
                               style: GoogleFonts.inknutAntiqua(fontSize: 14),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -419,11 +417,16 @@ class CartState extends State<CartWidget> {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        Text(
-                          "${CartRepository.getTotals().first}р",
-                          style: GoogleFonts.inknutAntiqua(),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        FutureBuilder(
+                          future: di<CartGetTotalsUseCase>().call(),
+                          builder: (context, snapshot) {
+                            return Text(
+                              "${snapshot.data?['withoutSale'] ?? 0}р",
+                              style: GoogleFonts.inknutAntiqua(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -443,11 +446,16 @@ class CartState extends State<CartWidget> {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        Text(
-                          "${CartRepository.getTotals().last}р",
-                          style: GoogleFonts.inknutAntiqua(),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        FutureBuilder(
+                          future: di<CartGetTotalsUseCase>().call(),
+                          builder: (context, snapshot) {
+                            return Text(
+                              "${snapshot.data?['withSale'] ?? 0}р",
+                              style: GoogleFonts.inknutAntiqua(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -476,11 +484,16 @@ class CartState extends State<CartWidget> {
                       ],
                     ),
                     SizedBox(height: 8),
-                    Text(
-                      "Итого: ${OrderRepository.getTotal()}",
-                      style: GoogleFonts.inknutAntiqua(),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    FutureBuilder(
+                      future: di<CartGetTotalsUseCase>().call(),
+                      builder: (context, snapshot) {
+                        return Text(
+                          "${snapshot.data?['total'] ?? 0}р",
+                          style: GoogleFonts.inknutAntiqua(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -491,13 +504,11 @@ class CartState extends State<CartWidget> {
       ),
 
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          if (CartRepository.getCart().isNotEmpty) {
-            CartRepository.doOrder();
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => MainPageWidget()),
-            );
-          }
+        onPressed: () async {
+          di<CartDoOrderUseCase>().call();
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Заказ оформлен, вам позвонят, когда он будет готов.'))
+          );
         },
         backgroundColor: Color(0xFFD3BD9E),
         shape: RoundedRectangleBorder(

@@ -1,10 +1,13 @@
+import 'package:coffee_lake_app/features/cart/data/datasources/CartLocalDataSource.dart';
 import 'package:coffee_lake_app/features/mainPage/view/MainPageWidget.dart';
 import 'package:flutter/material.dart';
 
 import 'core/di.dart';
 
-void main() {
+void main() async {
   diSetup();
+  await di<CartLocalDataSource>().init();
+
   runApp(const MainApp());
 }
 

@@ -1,8 +1,15 @@
 import 'package:coffee_lake_app/features/auth/domain/repositories/AuthRepository.dart';
 import 'package:coffee_lake_app/features/auth/domain/usecases/AuthUseCase.dart';
+import 'package:coffee_lake_app/features/cart/data/datasources/CartLocalDataSource.dart';
+import 'package:coffee_lake_app/features/cart/domain/repositories/CartRepository.dart';
+import 'package:coffee_lake_app/features/cart/domain/usecases/CartAddUseCase.dart';
+import 'package:coffee_lake_app/features/cart/domain/usecases/CartContainsUseCase.dart';
+import 'package:coffee_lake_app/features/cart/domain/usecases/CartCountProductUseCase.dart';
+import 'package:coffee_lake_app/features/cart/domain/usecases/CartDoOrderUseCase.dart';
 import 'package:coffee_lake_app/features/menu/data/datasources/MenuRemoteDataSource.dart';
 import 'package:coffee_lake_app/features/menu/domain/usecases/GetMenuUseCase.dart';
 import 'package:coffee_lake_app/features/profile/domain/usecases/UpdateProfileUseCase.dart';
+import 'package:coffee_lake_app/services/OrderService.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 
@@ -46,6 +53,14 @@ void diSetup() {
   di.registerLazySingleton(() => GetMenuUseCase(di<MenuRemoteDataSource>()));
   di.registerLazySingleton(() => GetDetailsUseCase(di<MenuRemoteDataSource>()));
 
+  di.registerLazySingleton(() => CartAddUseCase(di<CartRepository>()));
+  di.registerLazySingleton(() => CartContainsUseCase(di<CartRepository>()));
+  di.registerLazySingleton(() => CartCountProductUseCase(di<CartRepository>()));
+  di.registerLazySingleton(() => CartDoOrderUseCase(di<CartRepository>()));
+  di.registerLazySingleton(() => CartGetTotalsUseCase(di<CartRepository>()));
+  di.registerLazySingleton(() => CartGetUseCase(di<CartRepository>()));
+  di.registerLazySingleton(() => CartRemoveUseCase(di<CartRepository>()));
+
   /******************************************
 
       Data Sources
@@ -54,6 +69,7 @@ void diSetup() {
 
   di.registerLazySingleton(() => AuthRemoteDataSource());
   di.registerLazySingleton(() => MenuRemoteDataSource());
+  di.registerLazySingleton(() => CartLocalDataSource());
 
   /******************************************
 
@@ -62,4 +78,17 @@ void diSetup() {
    ******************************************/
 
   di.registerLazySingleton(() => AuthRepository(di<AuthRemoteDataSource>()));
+  di.registerLazySingleton(() => CartRepository(di<CartLocalDataSource>()));
+
+
+  /******************************************
+
+      Services
+
+   ******************************************/
+
+  di.registerLazySingleton(() => OrderService(di<CartRepository>(), di<AuthRepository>()));
+
+
+
 }
