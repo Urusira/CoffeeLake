@@ -56,10 +56,9 @@ class ProfileState extends State<ProfileWidget> {
       lastDate: DateTime.now(),
     );
     if (picked != null) {
-      setState(() {
         birthdayController.text =
-            "${picked.year}.${picked.month}.${picked.day}";
-      });
+            "${picked.day}.${picked.month}.${picked.year}";
+        setState(() {});
     }
   }
 

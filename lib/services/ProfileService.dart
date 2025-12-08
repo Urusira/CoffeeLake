@@ -8,7 +8,8 @@ import '../features/profile/view/ProfileWidget.dart';
 class ProfileService {
   static Future<void> openProfile(BuildContext context) async {
     final profile = await di<GetProfileUseCase>().call();
-    Navigator.of(context).push(
+
+    await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => profile != null ? ProfileWidget() : AuthWidget(),
       ),

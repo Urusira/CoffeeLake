@@ -26,6 +26,8 @@ class CartWidget extends StatefulWidget {
 class CartState extends State<CartWidget> {
   bool useBonusFlag = di<GetBonusesFlagUseCase>().call();
 
+  String formatPrice(num value) => value.toStringAsFixed(2);
+
   Widget? getSale(CartProductData product) {
     //Акция
     if (product.sale == 0) {
@@ -122,7 +124,7 @@ class CartState extends State<CartWidget> {
                             width: 90,
                             alignment: AlignmentDirectional.center,
                             child: Text(
-                              "${priceWithSale}р",
+                              "${formatPrice(priceWithSale)}р",
                               style: GoogleFonts.inknutAntiqua(fontSize: 14),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -250,7 +252,7 @@ class CartState extends State<CartWidget> {
             ),
             SizedBox(height: 2),
             Text(
-              "Главная",
+              "Корзина",
               style: GoogleFonts.inknutAntiqua(
                 color: Color(0xff444444),
                 fontSize: 18,
@@ -260,7 +262,7 @@ class CartState extends State<CartWidget> {
         ),
         centerTitle: true,
         leading: IconButton(
-          onPressed: () {
+          onPressed: () async {
             Navigator.of(context).pop();
           },
           icon: Icon(Icons.arrow_back),
@@ -421,7 +423,7 @@ class CartState extends State<CartWidget> {
                           future: di<OrderGetTotalsUseCase>().call(),
                           builder: (context, snapshot) {
                             return Text(
-                              "${snapshot.data?['withoutSale'] ?? 0}р",
+                              "${formatPrice(snapshot.data?['withoutSale'] ?? 0)}р",
                               style: GoogleFonts.inknutAntiqua(),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -450,7 +452,7 @@ class CartState extends State<CartWidget> {
                           future: di<OrderGetTotalsUseCase>().call(),
                           builder: (context, snapshot) {
                             return Text(
-                              "${snapshot.data?['withSale'] ?? 0}р",
+                              "${formatPrice(snapshot.data?['withSale'] ?? 0)}р",
                               style: GoogleFonts.inknutAntiqua(),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -493,7 +495,7 @@ class CartState extends State<CartWidget> {
                       future: di<OrderGetTotalsUseCase>().call(),
                       builder: (context, snapshot) {
                         return Text(
-                          "${snapshot.data?['total'] ?? 0}р",
+                          "${formatPrice(snapshot.data?['total'] ?? 0)}р",
                           style: GoogleFonts.inknutAntiqua(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

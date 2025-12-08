@@ -242,7 +242,16 @@ class ProductDetailsState extends State<ProductDetailsWidget> {
                     loadedProductVolume,
                   ),
                   builder: (context, snapshot) {
-                    if (snapshot.hasData && !snapshot.data!) {
+                    if (!snapshot.hasData) {
+                      return const SizedBox(
+                        height: 42,
+                        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                      );
+                    }
+
+                    final inCart = snapshot.data!;
+
+                    if (!inCart) {
                       //Добавление товара
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.center,

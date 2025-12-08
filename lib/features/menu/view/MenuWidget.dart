@@ -31,7 +31,7 @@ class MenuState extends State<MenuWidget> {
             ),
             SizedBox(height: 2),
             Text(
-              "Главная",
+              "Наше меню",
               style: GoogleFonts.inknutAntiqua(
                 color: Color(0xff444444),
                 fontSize: 18,

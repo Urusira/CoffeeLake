@@ -8,7 +8,7 @@ class UpdateProfileUseCase {
   UpdateProfileUseCase(this.repository);
 
   Future<void> call(String name, phone, email, birthday) async {
-    di<AuthRepository>().updateProfile(
+    await di<AuthRepository>().updateProfile(
       ShortUserData(name: name, phone: phone, email: email, birthday: birthday),
     );
   }

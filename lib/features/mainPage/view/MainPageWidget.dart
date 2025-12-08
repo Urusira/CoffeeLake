@@ -1,4 +1,5 @@
 import 'package:coffee_lake_app/features/auth/domain/repositories/AuthRepository.dart';
+import 'package:coffee_lake_app/features/profile/domain/usecases/ProfileGetBonusesUseCase.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lorem_ipsum/lorem_ipsum.dart';
@@ -42,12 +43,11 @@ class MainPageState extends State<MainPageWidget> {
         ),
         centerTitle: true,
         leading: IconButton(
-          onPressed: () {
-            setState(() {
-              Navigator.of(context).push(
+          onPressed: () async {
+              await Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => const MenuWidget()),
               );
-            });
+              setState(() {});
           },
           icon: Icon(Icons.shopping_cart),
         ),
@@ -56,6 +56,7 @@ class MainPageState extends State<MainPageWidget> {
           IconButton(
             onPressed: () async {
               await ProfileService.openProfile(context);
+              setState(() {});
             },
             icon: Icon(Icons.person),
           ),
@@ -138,15 +139,19 @@ class MainPageState extends State<MainPageWidget> {
                                 ),
                                 SizedBox(
                                   width: 170,
-                                  child: Text(
-                                    "Ваши бонусы: ${currentUser?.bonuses ?? 0}",
-                                    textAlign: TextAlign.center,
-                                    softWrap: true,
-                                    style: GoogleFonts.inknutAntiqua(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
+                                  child: FutureBuilder(
+                                    future: di<ProfileGetBonusesUseCase>().call(),
+                                    builder: (context, snapshot) {
+                                    return Text(
+                                      "Ваши бонусы: ${snapshot.data ?? 0}",
+                                      textAlign: TextAlign.center,
+                                      softWrap: true,
+                                      style: GoogleFonts.inknutAntiqua(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                    );
+                                  })
                                 ),
                                 SizedBox(
                                   width: 150,

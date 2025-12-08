@@ -19,7 +19,7 @@ class AuthRepository {
   }
 
   void logout() async {
-    di<FlutterSecureStorage>().delete(key: 'poki');
+    await di<FlutterSecureStorage>().delete(key: 'poki');
   }
 
   Future<UserData?> getProfile() async {
@@ -27,11 +27,11 @@ class AuthRepository {
   }
 
   Future<String?> getToken() async {
-    return di<FlutterSecureStorage>().read(key: 'poki');
+    return await di<FlutterSecureStorage>().read(key: 'poki');
   }
 
   Future<void> updateProfile(ShortUserData data) async {
-    remoteDataSource.updateProfile(data);
+    await remoteDataSource.updateProfile(data);
   }
 
   Future<int> getBonuses() async {
